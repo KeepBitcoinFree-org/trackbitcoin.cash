@@ -49,10 +49,11 @@ var express = require('express');
 //import * as express from 'express';
 var bodyParser = __importStar(require("body-parser"));
 var app = express();
+//import BigNumber from 'bignumber.js';
 var session = require('express-session');
 app.use(session({ secret: 'trackBitcoinCash__BCH420' }));
 var request = require('request');
-//bitbox in this bitch - for future dev
+//BITBOX in this bitch
 var BITBOX = require('bitbox-sdk').BITBOX;
 var bitbox = new BITBOX();
 // let SLPSDK = require('slp-sdk');
@@ -65,7 +66,7 @@ const queryAllUnconf2Faucet = {
   "q": {
     "db": ["u"],
     "find": {
-      "out.e.a": "qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g"
+      "out.e.a": "simpleledger:address"
     }
   }
 }
@@ -80,71 +81,58 @@ const queryAllUnconf = {
   }
 }
 */
+// deal with numbers with commas
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-// var app = express();
-//import * as bodyParser from 'body-parser';
 // configure Express
 app.set('views', __dirname + '/views');
-//app.use(express.static(__dirname + '/public'));
-// initial get request from user.
-app.get('/', function (req, res) {
-    // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
-    var session = req.session;
-    if (!session.addressArray) {
-        session.addressArray = new Array();
-    }
-    // ;(async () => {
-    //   let res = await bitbox.BitDB.get(queryBCHaddress);
-    //   console.log(res.c);
-    // });
-    // console.log(bitbox.Mnemonic.generate());
-    //TODO: USE COOKIES TO STORE USER ADDRESSES FOREVER & LOAD THEM.
-    // return index page
-    res.render('index', { addressArray: session.addressArray });
-    //  res.render('index', { user: req.user });
-});
-app.get('/login', function (req, res) {
-    res.render('login', { user: req.user });
-});
-// FAUCET CODE
-function removeFromArray(userIP, address, redditId) {
-    //error, remove userIP & address from arrays.
-    // const indexIP = users.indexOf(userIP);
-    // const indexAd = addressArray.indexOf(address);
-    // const indexRd = redditIdArray.indexOf(redditId);
-    // if (indexIP > -1) {
-    //   users.splice(indexIP, 1);
-    // }
-    // if (indexAd > -1) {
-    // 	addressArray.splice(indexAd, 1);
-    // }
-    // if (indexRd > -1) {
-    // 	redditIdArray.splice(indexRd, 1);
-    // }
-}
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 //csurf cookie thangs
 //var csrf = require('csurf')
+//parser for our cookies
 var cookieParser = require('cookie-parser');
 //var csrfProtection = csrf({ cookie: true })
 app.use(cookieParser());
 //app.use(csrfMiddleware);
+// initial GET REQ from USER.
+app.get('/', function (req, res) {
+    // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
+    // initialize the session from the request. 
+    var session = req.session;
+    // if session addressArray doesn't exist, create a new one to store addresses
+    if (!session.addressArray) {
+        session.addressArray = new Array();
+    }
+    // return index page
+    res.render('index', { addressArray: session.addressArray, errorAddress: null, errorEmail: null });
+});
+// TEST PAGE FOR FUTURE DEV
 app.get('/testpay', function (req, res) {
     //startWebSocket();
     res.render('testpay', {});
 });
+// write to file
+var fs = require('fs');
+// EMAIL SIGN UP, just add to a log file. 
 app.post('/email', function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var session, email;
         return __generator(this, function (_a) {
             session = req.session;
             email = req.body.email;
-            console.log('USER ENTERED EMAIL: ' + email);
-            res.render('index', { addressArray: session.addressArray });
+            fs.appendFile('emails.txt', email, function (err) {
+                if (err) {
+                    // append failed
+                }
+                else {
+                    // done
+                }
+            });
+            // render the page, pass back in the session addressArray for user
+            res.render('index', { addressArray: session.addressArray, errorAddress: null, errorEmail: null });
             return [2 /*return*/];
         });
     });
@@ -158,17 +146,19 @@ app.post('/', function (req, res) {
             addressArray = session.addressArray;
             cashAddr = req.body.address;
             (function () { return __awaiter(_this, void 0, void 0, function () {
-                var details, usd, slpaddress, bch, balanceUsd, totalRec, unconfirmedBalusd;
+                var details, usd, slpaddress, bch, balanceUsd, totalRec, unconfirmedBalusd, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, bitbox.Address.details(cashAddr)];
+                        case 0:
+                            _a.trys.push([0, 3, , 4]);
+                            return [4 /*yield*/, bitbox.Address.details(cashAddr)];
                         case 1:
                             details = _a.sent();
                             return [4 /*yield*/, bitbox.Price.current('usd')];
                         case 2:
                             usd = _a.sent();
                             usd = usd / 100;
-                            slpaddress = details.slpAddress;
+                            slpaddress = details.slpAddress.trim();
                             bch = details.balance;
                             console.log('BCH BAL (cashAddr)', bch);
                             balanceUsd = details.balance * usd;
@@ -185,8 +175,14 @@ app.post('/', function (req, res) {
                                 'unconfBal': details.unconfirmedBalance,
                                 'unconfBalUsd': unconfirmedBalusd
                             });
-                            res.render('index', { addressArray: addressArray });
-                            return [2 /*return*/];
+                            res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null });
+                            return [3 /*break*/, 4];
+                        case 3:
+                            error_1 = _a.sent();
+                            console.log(error_1);
+                            res.render('index', { addressArray: addressArray, errorAddress: error_1, errorEmail: null });
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
                     }
                 });
             }); })();
@@ -194,7 +190,7 @@ app.post('/', function (req, res) {
         });
     });
 });
-app.listen(process.env.PORT, function () {
+app.listen(80, function () {
     console.log('SLP faucet server listening on port ' + process.env.PORT + '!');
 });
 //# sourceMappingURL=server.js.map

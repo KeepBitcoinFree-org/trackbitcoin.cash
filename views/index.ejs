@@ -63,6 +63,9 @@
 							<p style="text-align:center;">
 								<form action="/" method="post">
 									<center>
+								<% if (errorAddress) { %>
+									 <%= errorAddress %> 
+								<% } %>
 									<input name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required style="width:580px;margin:0;" >
 									<br />
 									<input name="submit" type="submit" placeholder="Submit" />
@@ -86,7 +89,7 @@
 							}
 							</style>
 							<br /><br />
-							<h3> - Tracked Addresses - </h3>
+							<h2> - Tracked BCH Addresses - </h2>
 							<table >
 								  <% if(addressArray != null) { %>
             					<% addressArray.forEach(function(addr){ %>
@@ -192,7 +195,11 @@
 					<form action="/email" method="POST">
 						<div class="row gtr-50 gtr-uniform">
 							<div class="col-8 col-12-mobilep">
-								<input type="email" name="email" id="email" placeholder="Email Address" />
+								<% if (errorEmail) { %>
+									 <%= errorEmail %> 
+							
+								<% } %>
+								<input type="email" name="email" id="email" placeholder="Email Address" required />
 							</div>
 							<div class="col-4 col-12-mobilep">
 								<input type="submit" value="Sign Up" class="fit" />
