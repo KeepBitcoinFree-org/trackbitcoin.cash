@@ -160,12 +160,9 @@ app.post('/', function (req, res) {
                             usd = usd / 100;
                             slpaddress = details.slpAddress.trim();
                             bch = details.balance;
-                            console.log('BCH BAL (cashAddr)', bch);
                             balanceUsd = details.balance * usd;
-                            console.log('USD BAL', balanceUsd);
                             totalRec = (details.totalReceived * usd).toFixed(2);
                             unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
-                            //TODO: if $ is over 3 digits, add a comma  = $420,420
                             balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
                             session.addressArray.push({
                                 'cashAddr': cashAddr,

@@ -122,7 +122,7 @@
 		-webkit-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		-ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
-		border-bottom: dotted 1px;
+		/* border-bottom: dotted 1px; */
 		color: #e89980;
 		text-decoration: none;
 	}
@@ -132,7 +132,7 @@
 		}
 
 	strong, b {
-		color: #646464;
+		color: black;
 		font-weight: 400;
 	}
 
@@ -2691,10 +2691,10 @@
 		}
 
 		table th {
-			color: #646464;
+			color: black;
 			font-size: 0.9em;
 			font-weight: 300;
-			padding: 0 0.75em 0.75em 0.75em;
+			padding: 0.5em .5em .5em .5em;
 			text-align: left;
 		}
 
@@ -3161,12 +3161,12 @@
 /* Banner */
 
 	#banner {
-		background-attachment: scroll,							fixed;
-		background-color: #666;
-		background-image: url("img/overlay.png"), url("../../img/banner.jpg");
-		background-position: top left,						center center;
-		background-repeat: repeat,							no-repeat;
-		background-size: auto,							cover;
+		background-attachment: scroll, fixed;
+		background-color: white;
+		background-image: url("img/overlay.png"), url("https://www.bitcoincash.org/media-kit/4-bitcoin-cash-logo-flag-full.png");
+		background-position: top, left, center center;
+		background-repeat: repeat, no-repeat;
+		background-size: cover;
 		color: #fff;
 		padding: 0 0 0 0;
 		text-align: center;
@@ -3303,10 +3303,14 @@
 /* CTA */
 
 	#cta {
-		background: #e89980;
-		color: #f9e6df;
+		 background: #F59332; 
+	/*	background-image: url('https://www.bitcoincash.org/media-kit/3-bitcoin-cash-logo-ot-medium.png'); */
+		color: #f9e6df; 
 		padding: 3.5em 0 4em 0;
 		text-align: center;
+
+
+  	
 	}
 
 		#cta h2, #cta h3, #cta h4, #cta h5, #cta h6 {
@@ -3379,7 +3383,7 @@
 		/* Banner */
 
 			#banner {
-				padding: 10em 0 18em 0;
+				padding: 15em 0 20em 0;
 			}
 
 	}
@@ -3404,6 +3408,8 @@
 
 			#banner {
 				background-attachment: scroll;
+				/* background-image: url('https://www.bitcoincash.org/media-kit/3-bitcoin-cash-logo-ot-medium.png'); */
+				
 			}
 
 				#banner h2 {

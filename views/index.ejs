@@ -38,15 +38,17 @@
 									</li>
 								</ul> -->
 							</li> 
-							<li><a href="http://keepbitcoin.cash" target="_blank" class="button">Keep Bitcoin Cash</a></li>
+							<li><a href="http://keepbitcoin.cash" target="_blank" class="button">KeepBitcoin.Cash</a></li>
 						</ul>
 					</nav> 
 				</header>
 
 			<!-- Banner -->
 				<section id="banner">
-					<h2><b> <span style="color:black">Track</span></b><span style="background-color:orange;">₿itcoin.Cash</span></h2>
-					<p>Enter an address to begin tracking the balance.</p>
+
+
+						<h2 style="font-size:3.5em"><b> <span style="color:black">Track</span></b><span style="background-color:#F59332;">₿itcoin.Cash</span></h2>
+						
 					<!--
 					<ul class="actions special">
 						<li><a href="#" class="button primary">Sign Up</a></li> 
@@ -59,12 +61,14 @@
 
 					<section class="box special">
 						<header class="major">
-							<h2>Enter a Bitcoin Cash Address:</h2>
+						<!--	<h2>Enter a Bitcoin Cash Address:</h2> -->
+
+						<h2 style="color:black">Enter an address to begin tracking the balance.</h2>
 							<p style="text-align:center;">
 								<form action="/" method="post">
 									<center>
 								<% if (errorAddress) { %>
-									 <%= errorAddress %> 
+									 <span style="background-color: #FFFF00"> <%= errorAddress.error %> </span>
 								<% } %>
 									<input name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required style="width:580px;margin:0;" >
 									<br />
@@ -83,13 +87,17 @@
 							border-collapse: collapse;
 							  border: solid black;
 							  font-size:14pt;
+							  color:black;
 							}
 							th {
-							background-color: #F0F8FF;
+							background-color: #F59332;
+							color:black;
+														  padding: 0 0 0 0;
+
 							}
 							</style>
 							<br /><br />
-							<h2> - Tracked BCH Addresses - </h2>
+							<h2 style="color:black;"> - Tracked BCH Addresses - </h2>
 							<table >
 								  <% if(addressArray != null) { %>
             					<% addressArray.forEach(function(addr){ %>
@@ -188,25 +196,26 @@
 
 			<!-- CTA -->
 				<section id="cta">
-
-					<h2>Sign up for beta access</h2>
-					<p>We're still figuring all this shit out so add your email and we'll let you know.</p>
+					<div class="cta">
+					<h2 style="color:white;">Sign up for beta access</h2>
+					<p style="color:black">We're still figuring all this shit out so add your email and we'll let you know.</p>
 
 					<form action="/email" method="POST">
 						<div class="row gtr-50 gtr-uniform">
-							<div class="col-8 col-12-mobilep">
+							<div class="col-8 col-12-mobilep" >
 								<% if (errorEmail) { %>
 									 <%= errorEmail %> 
 							
 								<% } %>
-								<input type="email" name="email" id="email" placeholder="Email Address" required />
+								<input type="email" name="email" id="email" placeholder="Email Address" required style="color:black;background-color:grey;opacity:.6" />
 							</div>
 							<div class="col-4 col-12-mobilep">
-								<input type="submit" value="Sign Up" class="fit" />
+								<input type="submit" value="Sign Up" class="fit" style="color:black;"/>
 							</div>
+
 						</div>
 					</form>
-
+				</div>
 				</section>
 
 			<!-- Footer -->
@@ -222,13 +231,17 @@
 					</ul>
 				-->
 					<ul class="copyright">
-						<li>&copy; <b>Track</b><span style="background-color:orange;">Bitcoin.Cash</span>. All rights reserved.</li>
-						
+						<center>
+						<li><br /> <b>Powered by</b> <br /><a href="https://keepbitcoinfree.org/SOUR" target="_blank"> <img src="https://tokens.bch.sx/128/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0.png" /></a></li>
+					</center>
+					<br />
+						<li>&copy; <b>Track</b>Bitcoin.Cash. All rights reserved.</li>
+						<br />
 						<li style="font-size:7pt;">Template Design by <a href="http://html5up.net">HTML5 UP</a></li>
 <br />
-						<li style="font-size:7pt;"> * This site uses cookies. By continuing, you agree that's alright man. We're not liable and you're not going to sue us. <br />We won't use your data except to show you the addresses you've entered into our Dapp. </li>
+						<li style="font-size:7pt;"> * This site uses cookies. By continuing, you agree that's alright man and you're not going to sue us. <br />We won't use your data except to show you the addresses you've entered into our app. </li>
 				<br />
-						<li><br /> <b>Powered by</b> <br /><a href="https://keepbitcoinfree.org/SOUR" target="_blank"> <img src="https://tokens.bch.sx/128/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0.png" /></a></li>
+
 					</ul>
 				</footer>
 
