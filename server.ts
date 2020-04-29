@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+//import * as dotenv from 'dotenv';
+//dotenv.config();
 const express = require('express');
 //import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -72,9 +72,10 @@ app.get('/', function(req, res){
 
 // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
 
-// initialize the session from the request. 
+// initialize the session from the request.
   let session = req.session;
 
+ // console.log(session);
 // if session addressArray doesn't exist, create a new one to store addresses
   if(!session.addressArray){
     session.addressArray = new Array ();
@@ -100,7 +101,7 @@ app.get('/testpay', function (req, res) {
 var fs = require('fs')
 
 
-// EMAIL SIGN UP, just add to a log file. 
+// EMAIL SIGN UP, just add to a log file.
 app.post('/email', async function (req, res) {
 
   let session = req.session;
@@ -108,7 +109,7 @@ app.post('/email', async function (req, res) {
 
 
   fs.appendFile('emails.txt', email, function (err) {
-  
+
   if (err) {
     // append failed
   } else {
@@ -124,9 +125,13 @@ app.post('/email', async function (req, res) {
 
 app.post('/', async function (req, res) {
 
+//  console.log(req.session);
   // console.log(req.POST);
   let session = req.session;
   let addressArray = session.addressArray;
+  if(!session.addressArray){
+    session.addressArray = new Array();
+  }
   let cashAddr = req.body.address;
 
   (async () => {
@@ -144,7 +149,7 @@ app.post('/', async function (req, res) {
                     let slpaddress = details.slpAddress.trim();
 
                     let bch = details.balance;
-        
+
                    // console.log('BCH BAL (cashAddr)', bch);
 
                     let balanceUsd = details.balance * usd;
@@ -152,7 +157,7 @@ app.post('/', async function (req, res) {
 
                     let totalRec = (details.totalReceived * usd).toFixed(2);
                     let unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
-                    
+
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
 
                     session.addressArray.push({
@@ -175,8 +180,8 @@ app.post('/', async function (req, res) {
 
 })
 
+const port = 8081;
 
-app.listen(80, function () {
-  console.log('SLP faucet server listening on port '+process.env.PORT+'!')
+app.listen(port, function () {
+  console.log('TrackBitcoin.Cash server is listening on port '+port+'!')
 })
-

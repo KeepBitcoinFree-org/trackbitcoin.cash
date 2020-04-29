@@ -43,8 +43,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv = __importStar(require("dotenv"));
-dotenv.config();
+//import * as dotenv from 'dotenv';
+//dotenv.config();
 var express = require('express');
 //import * as express from 'express';
 var bodyParser = __importStar(require("body-parser"));
@@ -100,8 +100,9 @@ app.use(cookieParser());
 // initial GET REQ from USER.
 app.get('/', function (req, res) {
     // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
-    // initialize the session from the request. 
+    // initialize the session from the request.
     var session = req.session;
+    // console.log(session);
     // if session addressArray doesn't exist, create a new one to store addresses
     if (!session.addressArray) {
         session.addressArray = new Array();
@@ -116,7 +117,7 @@ app.get('/testpay', function (req, res) {
 });
 // write to file
 var fs = require('fs');
-// EMAIL SIGN UP, just add to a log file. 
+// EMAIL SIGN UP, just add to a log file.
 app.post('/email', function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var session, email;
@@ -144,6 +145,9 @@ app.post('/', function (req, res) {
         return __generator(this, function (_a) {
             session = req.session;
             addressArray = session.addressArray;
+            if (!session.addressArray) {
+                session.addressArray = new Array();
+            }
             cashAddr = req.body.address;
             (function () { return __awaiter(_this, void 0, void 0, function () {
                 var details, usd, slpaddress, bch, balanceUsd, totalRec, unconfirmedBalusd, error_1;
@@ -187,7 +191,8 @@ app.post('/', function (req, res) {
         });
     });
 });
-app.listen(80, function () {
-    console.log('SLP faucet server listening on port ' + process.env.PORT + '!');
+var port = 8081;
+app.listen(port, function () {
+    console.log('TrackBitcoin.Cash server is listening on port ' + port + '!');
 });
 //# sourceMappingURL=server.js.map
