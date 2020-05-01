@@ -43,8 +43,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//import * as dotenv from 'dotenv';
-//dotenv.config();
+var dotenv = __importStar(require("dotenv"));
+dotenv.config();
 var express = require('express');
 //import * as express from 'express';
 var bodyParser = __importStar(require("body-parser"));
@@ -191,8 +191,8 @@ app.post('/', function (req, res) {
         });
     });
 });
-var port = 8081;
-app.listen(port, function () {
+var port = 80;
+app.listen(process.env.PORT || port, function () {
     console.log('TrackBitcoin.Cash server is listening on port ' + port + '!');
 });
 //# sourceMappingURL=server.js.map

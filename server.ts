@@ -1,5 +1,5 @@
-//import * as dotenv from 'dotenv';
-//dotenv.config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 const express = require('express');
 //import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -180,8 +180,8 @@ app.post('/', async function (req, res) {
 
 })
 
-const port = 8081;
+const port = 80;
 
-app.listen(port, function () {
+app.listen(process.env.PORT || port, function () {
   console.log('TrackBitcoin.Cash server is listening on port '+port+'!')
 })
