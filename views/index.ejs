@@ -12,6 +12,7 @@
 		<link rel="stylesheet" href="css/main.css" />
 		<meta name="description" content="TrackBitcoin.Cash allows you to track your Bitcoin Cash addresses. Add any address that holds Bitcoin Cash: Legacy, CashAddr, SLP (simpleledger). Add as many addresses as you want. Your addresses are stored in your browser's cookies so they'll be there when you want to check them.">
 		<meta name="keywords" content="Bitcoin Cash, dApp, Node.js, express, session, cookies, Bitcoin, BCH, Bitcoin Cash address tracker, address tracker, crypto, cryptocurrency, javascript, node, bitbox">
+		<meta name="robots" content="index, follow" />
 		<link rel="shortcut icon" href="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_64,w_64,q_auto/892386/12-bitcoin-cash-square-crop-full_dop5ob.png">
 <!--		 <meta http-equiv="refresh" content="120; URL=http://localhost"> -->
 
@@ -21,7 +22,7 @@
 
 			<!-- Header -->
 				<header id="header" class="alt">
-					<h1><a href="index.ejs">Track</a>Bitcoin.Cash</h1>
+					<h1><a href="/index">Track</a>Bitcoin.Cash</h1>
 
 					<nav id="nav">
 						<ul>
@@ -80,6 +81,7 @@
 									<input class="address" name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required >
 									<br />
 									<input name="submit" type="submit" placeholder="Submit" />
+
 								</center>
 
 								</form>
@@ -105,7 +107,9 @@
 							</style>
 							<br /><br />
 
+							<button style="float:right;" class="btn" onClick="window.location.reload();">Refresh</button><br />
 							<h2 style="color:black;"> - Tracked BCH Addresses - </h2>
+							
 						<div class="address-table">
 							<table class="addresses">
 							  <tr>
@@ -283,10 +287,12 @@
 						<!--	<a href="https://keepbitcoinfree.org/SOUR" target="_blank"> <img src="https://tokens.bch.sx/128/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0.png" /></a></li> -->
 					</center>
 					<br />
-						<li>&copy; 2020 Track<b>Bitcoin.Cash</b>. All rights reserved.</li>
+						<li>&copy; 2020 Track<b>Bitcoin.Cash</b> | <a href="https://keepbitcoinfree.org" target="_blank">KeepBitcoinFree.org, All rights reserved.</li>
 						<br />
 						<li> <a href="https://github.com/KeepBitcoinFree-org/trackbitcoin.cash" target="_blank">Open source code avail on Github.</a></li>
 						<li style="font-size:7pt;">Template Design by <a href="http://html5up.net">HTML5 UP</a></li>
+<br />
+						<li>Built with <span style="font-size:16pt"><a href="https://github.com/Bitcoin-com/bitbox-sdk" target="_blank">BITBOX SDK</a></span>
 <br />
 						<li style="font-size:7pt;"> * This site uses cookies. By continuing, you agree that's alright man and we aren't liable for anything. <br />We won't use your data except to show you the addresses you've entered into our app. </li>
 				<br />
