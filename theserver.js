@@ -61,6 +61,7 @@ app.set('view engine', 'ejs');
 //parser for our cookies
 const cookieParser = require('cookie-parser');
 //var csrfProtection = csrf({ cookie: true })
+//const cookieSession = require('cookie-session');
 
 app.use(cookieParser());
 //app.use(csrfMiddleware);

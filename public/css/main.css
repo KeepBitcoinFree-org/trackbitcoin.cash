@@ -78,6 +78,22 @@
 		appearance: none;
 	}
 
+
+	/* CUSTOM */
+
+	.address {
+		width:60%;
+		margin:0;
+	}
+
+	.addresses {
+		width:95%;
+	}
+
+	.address-table {
+		overflow-x:auto;
+	}
+
 /* Basic */
 
 	@-ms-viewport {
@@ -94,6 +110,10 @@
 			min-width: 320px;
 		}
 
+		.address {
+			width:60%;
+			margin:0;
+		}
 	}
 
 	html {
@@ -3430,11 +3450,13 @@
 
 	}
 
-/* Narrower */
+/* Narrower
 
 	#navPanel, #navButton {
 		display: none;
 	}
+
+	*/
 
 	@media screen and (max-width: 840px) {
 

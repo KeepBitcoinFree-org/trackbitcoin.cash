@@ -71,7 +71,7 @@
 								<% if (errorAddress) { %>
 									 <span style="background-color: #FFFF00"> <%= errorAddress.error %> </span>
 								<% } %>
-									<input name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required style="width:580px;margin:0;" >
+									<input class="address" name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required >
 									<br />
 									<input name="submit" type="submit" placeholder="Submit" />
 								</center>
@@ -98,8 +98,10 @@
 							}
 							</style>
 							<br /><br />
+
 							<h2 style="color:black;"> - Tracked BCH Addresses - </h2>
-							<table >
+						<div class="address-table">
+							<table class="addresses">
 								  <% if(addressArray != null) { %>
             					<% addressArray.forEach(function(addr){ %>
 							  <tr>
@@ -113,7 +115,7 @@
 							  <% }) } %>
 
 							</table>
-
+						</div>
 							<p id="trackedAddresses">
 
 
