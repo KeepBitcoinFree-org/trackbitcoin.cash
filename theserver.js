@@ -241,7 +241,7 @@ app.get('/clearcookies', function (req, res) {
 })
 
 
-app.listen(80, function () {
+app.listen(process.env.PORT || 80, function () {
   console.log('TrackBitcoin.Cash server listening on port 80!')
 })
 

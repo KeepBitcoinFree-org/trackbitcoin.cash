@@ -216,8 +216,8 @@ app.post('/', function (req, res) {
     });
 });
 app.get('/cookie', function (req, res) {
-    console.log('COOKIES: ', req.cookies);
-    res.send(JSON.stringify(req.cookies));
+    // console.log('COOKIES: ', req.cookies);
+    res.send(req.cookies);
 });
 // app.get('/add', function (req, res) {
 // // res.cookie('SOUR_Faucet', sour_cookie, { maxAge: 5000, httpOnly: true });
@@ -229,7 +229,7 @@ app.get('/clearcookies', function (req, res) {
     res.clearCookie('trackbitcoin.cash');
     res.send('All trackbitcoin.cash cookies have been removed. Thanks for stopping by!');
 });
-app.listen(80, function () {
+app.listen(process.env.PORT || 80, function () {
     console.log('TrackBitcoin.Cash server listening on port 80!');
 });
 //# sourceMappingURL=server.js.map
