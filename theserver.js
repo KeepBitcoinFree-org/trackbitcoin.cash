@@ -196,7 +196,11 @@ app.post('/', async function (req, res) {
                     let totalRec = details.totalReceived;
 
                     let totalRecUsd = (details.totalReceived * usd).toFixed(2);
+
+                    let unconfirmedBal = details.unconfirmedBalance;
                     let unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
+
+                    console.log(unconfirmedBal);
                     
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
 
@@ -206,7 +210,7 @@ app.post('/', async function (req, res) {
                       'usd': balanceUsd,
                       'totalRec': totalRec,
                       'totalRecUsd': totalRecUsd,
-                //      'unconfBal': details.unconfirmedBalance,
+                      'unconfBal': unconfirmedBal,
                       'unconfBalUsd': unconfirmedBalusd
                     })
 

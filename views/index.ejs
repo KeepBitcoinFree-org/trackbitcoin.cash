@@ -22,7 +22,7 @@
 
 			<!-- Header -->
 				<header id="header" class="alt">
-					<h1><a href="/index">Track</a>Bitcoin.Cash</h1>
+					<h1><a href="#tracked">Track</a>Bitcoin.Cash</h1>
 
 					<nav id="nav">
 						<ul>
@@ -105,10 +105,13 @@
 
 							}
 							</style>
-							<br /><br />
+							<a name="tracked"><br /></a><br />
 
-							<button style="float:right;" class="btn" onClick="window.location.reload();">Refresh</button><br />
-							<h2 style="color:black;"> - Tracked BCH Addresses - </h2>
+							 
+							 	<button style="float:right;" class="btn" onClick="window.location.reload();">Refresh</button>
+							
+							 <br />
+							<h2 style="color:black;">- Tracked BCH Addresses - </h2>
 							
 						<div class="address-table">
 							<table class="addresses">
@@ -120,7 +123,11 @@
             					<% addressArray.forEach(function(addr){ %>
 							  <tr>
 							  	<td><span title="<%= addr.bch %> BCH, usd: $<%= addr.usd %>, total recieved: $<%= addr.totalRec %>, unconfBal: <%= addr.unconfBal %> BCH, unconfBalUsd: $<%= addr.unconfBalUsd %> "> <%= addr.cashAddr %> </span></td>
-							  	<td><span title="Total balance"> <%= addr.bch %> BCH, $<%= addr.usd %> </span></td>
+							  	<td><span title="Total balance"> <%= addr.bch %> BCH, $<%= addr.usd %> <br /> 
+							  		<% if (addr.unconfBalUsd > 0){ %>
+							  		<!-- <%= addr.unconfBal %> -->
+							  		($<%= addr.unconfBalUsd %> unconfirmed)</span></td>
+							  		<% } %>
 							  </tr>
 
 <!-- future shit 

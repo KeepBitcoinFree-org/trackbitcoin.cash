@@ -170,7 +170,7 @@ app.post('/', function (req, res) {
             //     console.error(error);
             //   }
             (function () { return __awaiter(_this, void 0, void 0, function () {
-                var details, usd, slpaddress, bch, balanceUsd, totalRec, totalRecUsd, unconfirmedBalusd, error_1;
+                var details, usd, slpaddress, bch, balanceUsd, totalRec, totalRecUsd, unconfirmedBal, unconfirmedBalusd, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -187,7 +187,9 @@ app.post('/', function (req, res) {
                             balanceUsd = details.balance * usd;
                             totalRec = details.totalReceived;
                             totalRecUsd = (details.totalReceived * usd).toFixed(2);
+                            unconfirmedBal = details.unconfirmedBalance;
                             unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
+                            console.log(unconfirmedBal);
                             balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
                             addressArray.push({
                                 'cashAddr': cashAddr,
@@ -195,7 +197,7 @@ app.post('/', function (req, res) {
                                 'usd': balanceUsd,
                                 'totalRec': totalRec,
                                 'totalRecUsd': totalRecUsd,
-                                //      'unconfBal': details.unconfirmedBalance,
+                                'unconfBal': unconfirmedBal,
                                 'unconfBalUsd': unconfirmedBalusd
                             });
                             // console.log(addressArray);
