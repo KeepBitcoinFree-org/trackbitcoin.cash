@@ -67,7 +67,7 @@
 						<header class="major">
 						<!--	<h2>Enter a Bitcoin Cash Address:</h2> -->
 
-						<h2 style="color:black">Enter an address to begin tracking the balance.</h2>
+						<h2 style="color:black"><span title="Any address that holds BCH will work.">Enter an address to begin tracking the balance.</span></h2>
 							<p style="text-align:center;">
 								<form action="/" method="post">
 									<center>
@@ -113,8 +113,8 @@
 								  <% if(addressArray != null) { %>
             					<% addressArray.forEach(function(addr){ %>
 							  <tr>
-							  	<td> <%= addr.cashAddr %> </td>
-							  	<td> <%= addr.bch %> BCH, $<%= addr.usd %> </td>
+							  	<td><span title="<%= addr.bch %> BCH, usd: $<%= addr.usd %>, total recieved: $<%= addr.totalRec %>, unconfBal: <%= addr.unconfBal %> BCH, unconfBalUsd: $<%= addr.unconfBalUsd %> "> <%= addr.cashAddr %> </span></td>
+							  	<td><span title="Total balance"> <%= addr.bch %> BCH, $<%= addr.usd %> </span></td>
 							  </tr>
 
 <!-- future shit 
@@ -230,7 +230,7 @@
 									 <%= errorEmail %>
 
 								<% } %>
-								<input type="email" name="email" id="email" placeholder="Email Address" required style="color:black;background-color:grey;opacity:.6" />
+								<input type="email" name="email" id="email" placeholder="Email Address" required />
 							</div>
 							<div class="col-4 col-12-mobilep">
 								<input type="submit" value="Sign Up" class="fit" style="color:black;"/>
