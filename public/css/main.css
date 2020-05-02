@@ -94,6 +94,14 @@
 		overflow-x:auto;
 	}
 
+	.addr-info {
+		display:none;
+	}
+
+	.address-table:hover + .addr-info {
+		display:block;
+	}
+
 /* Basic */
 
 	@-ms-viewport {

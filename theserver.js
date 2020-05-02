@@ -7,8 +7,8 @@ const app = express();
 
 //import BigNumber from 'bignumber.js';
 
-var session = require('express-session')
-app.use(session({secret:'trackBitcoinCash__BCH420'}));
+//var session = require('express-session')
+//app.use(session({secret:'trackBitcoinCash__BCH420'}));
 
 
 const request = require('request');
@@ -68,22 +68,40 @@ app.use(cookieParser());
 
 
 
-  // initial GET REQ from USER.
+  // initial GET REQ from USER. *************
 app.get('/', function(req, res){
 
 // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
 
 // initialize the session from the request. 
-  let session = req.session;
+ // let session = req.session;
+
+ // console.log(req.cookies);
+ // console.log(req.cookies['trackbitcoin.cash']);
+
+let addressArray = req.cookies['trackbitcoin.cash'];
+
+ if(!addressArray){
+  addressArray = new Array ();
+  res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
+ }
+ 
+
+
+
+ // let addressArray = req.cookies['trackbitcoin.cash']
 
 // if session addressArray doesn't exist, create a new one to store addresses
-  if(!session.addressArray){
-    session.addressArray = new Array ();
-  }
+  // if(!addressArray){
+  //   addressArray = new Array ();
+   
+  // }
+
+
 
 
 // return index page
-  res.render('index', { addressArray: session.addressArray, errorAddress: null, errorEmail: null });
+  res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null });
 
 })
 
@@ -92,8 +110,8 @@ app.get('/', function(req, res){
 
 // TEST PAGE FOR FUTURE DEV
 app.get('/testpay', function (req, res) {
-	//startWebSocket();
-	res.render('testpay', {});
+  //startWebSocket();
+  res.render('testpay', {});
 })
 
 
@@ -101,11 +119,12 @@ app.get('/testpay', function (req, res) {
 var fs = require('fs')
 
 
-// EMAIL SIGN UP, just add to a log file. 
+// EMAIL SIGN UP, just add to a log file. *********************
 app.post('/email', async function (req, res) {
 
-	let session = req.session;
-	let email = req.body.email;
+  let addressArray = req.cookies['trackbitcoin.cash'];
+  let email = req.body.email;
+
 
 
   fs.appendFile('emails.txt', email, function (err) {
@@ -118,19 +137,42 @@ app.post('/email', async function (req, res) {
   })
 
   // render the page, pass back in the session addressArray for user
-	res.render('index', {addressArray: session.addressArray,  errorAddress: null, errorEmail: null });
+  res.render('index', {addressArray: addressArray,  errorAddress: null, errorEmail: null });
 
 })
 
-
+// USER POST FORM ****************************
 app.post('/', async function (req, res) {
 
-	// console.log(req.POST);
-	let session = req.session;
-	let addressArray = session.addressArray;
-	let cashAddr = req.body.address;
+  // console.log(req.POST);
+ // let session = req.session;
+  let addressArray = req.cookies['trackbitcoin.cash'];
 
-	(async () => {
+  let cashAddr = req.body.address;
+
+  //console.log('addressArray.indexOf(cashAddr)', addressArray.indexOf(cashAddr));
+
+
+// try {
+  if(addressArray){
+
+    addressArray.forEach(function(value){
+    //console.log(value.cashAddr);
+      if(value.cashAddr == cashAddr){
+        console.log('address exists, sending back error');
+        res.render('index', { addressArray: addressArray, errorAddress: 'Address '+value.cashAddr+' already exists. Enter a new address.' , errorEmail: null});
+        return;
+      }
+    });
+
+  }
+//   }catch(error){
+//     console.error(error);
+//   }
+
+
+
+  (async () => {
     try{
 
 
@@ -151,33 +193,55 @@ app.post('/', async function (req, res) {
                     let balanceUsd = details.balance * usd;
                   //  console.log('USD BAL', balanceUsd);
 
-                    let totalRec = (details.totalReceived * usd).toFixed(2);
+                    let totalRec = details.totalReceived;
+
+                    let totalRecUsd = (details.totalReceived * usd).toFixed(2);
                     let unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
                     
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
 
-                    session.addressArray.push({
-                    	'cashAddr':cashAddr,
-                    	'bch': bch,
-                    	'usd': balanceUsd,
-                    	'totalRec': totalRec,
-                    	'unconfBal': details.unconfirmedBalance,
-                    	'unconfBalUsd': unconfirmedBalusd
+                    addressArray.push({
+                      'cashAddr':cashAddr,
+                      'bch': bch,
+                      'usd': balanceUsd,
+                      'totalRec': totalRec,
+                      'totalRecUsd': totalRecUsd,
+                //      'unconfBal': details.unconfirmedBalance,
+                      'unconfBalUsd': unconfirmedBalusd
                     })
 
+                   // console.log(addressArray);
+
+                    res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
                     res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null});
         }catch(error){
           console.log(error);
           res.render('index', { addressArray: addressArray, errorAddress: error, errorEmail: null});
         }
 
-			})()
+      })()
 
+})
 
+app.get('/cookie', function (req, res) {
+// console.log('COOKIES: ', req.cookies);
+ res.send(req.cookies);
+})
+
+// app.get('/add', function (req, res) {
+// // res.cookie('SOUR_Faucet', sour_cookie, { maxAge: 5000, httpOnly: true });
+//  res.send('SOUR cookie added');
+//  //var expiryDate = new Date(Number(new Date()) + 10000); 
+// })
+
+//REMOVE! 
+app.get('/clearcookies', function (req, res) {
+ res.clearCookie('trackbitcoin.cash');
+ res.send('All trackbitcoin.cash cookies have been removed. Thanks for stopping by!');
 })
 
 
 app.listen(80, function () {
-	console.log('SLP faucet server listening on port '+process.env.PORT+'!')
+  console.log('TrackBitcoin.Cash server listening on port 80!')
 })
 

@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="css/main.css" />
 		<link rel="shortcut icon" href="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_64,w_64,q_auto/892386/12-bitcoin-cash-square-crop-full_dop5ob.png">
+<!--		 <meta http-equiv="refresh" content="120; URL=http://localhost"> -->
+
 	</head>
 	<body class="landing is-preload">
 		<div id="page-wrapper">
@@ -70,6 +72,7 @@
 									<center>
 								<% if (errorAddress) { %>
 									 <span style="background-color: #FFFF00"> <%= errorAddress.error %> </span>
+									 <span style="background-color: #FFFF00"> <%= errorAddress %> </span>
 								<% } %>
 									<input class="address" name="address" type="text" placeholder="Enter your BCH address, ex: bitcoincash:qp7l6ns2g…" required >
 									<br />
@@ -102,16 +105,32 @@
 							<h2 style="color:black;"> - Tracked BCH Addresses - </h2>
 						<div class="address-table">
 							<table class="addresses">
-								  <% if(addressArray != null) { %>
-            					<% addressArray.forEach(function(addr){ %>
 							  <tr>
 							    <th><b>Address</b></th>
 							    <th><b>Balance</b></th>
 							  </tr>
+								  <% if(addressArray != null) { %>
+            					<% addressArray.forEach(function(addr){ %>
 							  <tr>
 							  	<td> <%= addr.cashAddr %> </td>
 							  	<td> <%= addr.bch %> BCH, $<%= addr.usd %> </td>
 							  </tr>
+
+<!-- future shit 
+							  <div class="addr-info">
+
+
+							    address: <%= addr.cashAddr %>, <br />
+							    bch: <%= addr.bch %> BCH, <br />
+							    usd: $<%= addr.usd %>, <br />
+							    total recieved: <%= addr.totalRec %>, <br />
+							    total recieved usd: <%= addr.totalRecUsd %>, <br />
+							    unconfBal: <%= addr.unconfBal %> BCH, <br />
+							    unconfBalUsd: <%= addr.unconfBalUsd %> <br />
+
+
+							  </div>
+					-->
 							  <% }) } %>
 
 							</table>
@@ -201,7 +220,7 @@
 				<section id="cta">
 					<div class="cta">
 					<h2 style="color:white;">Sign up for beta access</h2>
-					<p style="color:black">We're still figuring all this shit out so add your email and we'll let you know.</p>
+					<p style="color:black">We're still figuring all this shit out so add your email and we'll let you know about new apps, airdrops, or opportunities!
 
 					<form action="/email" method="POST">
 						<div class="row gtr-50 gtr-uniform">
@@ -235,14 +254,38 @@
 				-->
 					<ul class="copyright">
 						<center>
-						<li><br /> <b>Powered by</b> <br /><a href="https://keepbitcoinfree.org/SOUR" target="_blank"> <img src="https://tokens.bch.sx/128/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0.png" /></a></li>
+						<li><br /> <b>Powered by</b> <br />
+
+<a href="https://keepbitcoinfree.org/SOUR" target="_blank">
+							<img src="https://keepbitcoinfree.org/wp-content/uploads/SOUR-long-2000-1.png" alt="" height="200" width="460" > </a>
+
+<div class="sidenav" style="margin:0;">
+        <ul id="sm-links" class="nav justify-content-center" style="list-style: none;margin:0">
+           <li class="nav-item" style="padding-right:15px; margin:0;display:inline;">
+            <a href="https://memo.cash/token/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0?for-sale" target="_blank" rel="noopener noreferrer"><img src="https://keepbitcoinfree.org/wp-content/uploads/memo.png" height="30px" width="30px" alt="Memo"></a>
+          </li>
+          <li class="nav-item" style="margin:0;display:inline;padding-right:15px;">
+            <a href="https://twitter.com/sourtoken" target="_blank" rel="noopener noreferrer"><img src="https://keepbitcoinfree.org/wp-content/uploads/twitter-logo.png" alt="Twitter" height="30px" width="30px"></a>
+          </li>
+        <li class="nav-item" style="margin:0;display:inline;padding-right:15px;">
+  <a href="https://reddit.com/u/keepbitcoinfree_org" target="_blank" rel="noopener noreferrer"><img src="https://keepbitcoinfree.org/wp-content/uploads/reddit-logo.png" height="30px" width="30px" alt="Reddit"></a>
+  </li>
+  <li class="nav-item" style="margin:0;display:inline;padding-right:15px;">
+            <a href="https://t.me/sourtoken"><img src="https://keepbitcoinfree.org/wp-content/uploads/telegram.png" height="30px" width="30px" alt="Telegram"></a>
+          </li>
+   </ul>
+</div>
+
+
+						<!--	<a href="https://keepbitcoinfree.org/SOUR" target="_blank"> <img src="https://tokens.bch.sx/128/6448381f9649ecacd8c30189cfbfee71a91b6b9738ea494fe33f8b8b51cbfca0.png" /></a></li> -->
 					</center>
 					<br />
-						<li>&copy; <b>Track</b>Bitcoin.Cash. All rights reserved.</li>
+						<li>&copy; 2020 Track<b>Bitcoin.Cash</b>. All rights reserved.</li>
 						<br />
+						<li> <a href="https://github.com/KeepBitcoinFree-org/trackbitcoin.cash" target="_blank">Open source code avail on Github.</a></li>
 						<li style="font-size:7pt;">Template Design by <a href="http://html5up.net">HTML5 UP</a></li>
 <br />
-						<li style="font-size:7pt;"> * This site uses cookies. By continuing, you agree that's alright man and you're not going to sue us. <br />We won't use your data except to show you the addresses you've entered into our app. </li>
+						<li style="font-size:7pt;"> * This site uses cookies. By continuing, you agree that's alright man and we aren't liable for anything. <br />We won't use your data except to show you the addresses you've entered into our app. </li>
 				<br />
 
 					</ul>
