@@ -243,7 +243,7 @@ app.post('/email', async function (req, res) {
 
 })
 
-// USER POST FORM ****************************
+// ************************* USER POST FORM ****************************
 app.post('/', async function (req, res) {
 
   let addressArray = req.cookies['trackbitcoin.cash'];
@@ -271,14 +271,15 @@ app.post('/', async function (req, res) {
       usersAddresses.push(cashAddr);
     }
 
-    if(x == 0){
-  //     console.log('addressArray doesnt exist, lets add the submitted address')
-        usersAddresses.push(cashAddr);
+  //   if(x == 0){
+  // //     console.log('addressArray doesnt exist, lets add the submitted address')
+  //       usersAddresses.push(cashAddr);
 
-      }
+  //     }
 
  //  console.log('usersAddresses', usersAddresses);
   }
+
 
 
 if(usersAddresses.length > 0){

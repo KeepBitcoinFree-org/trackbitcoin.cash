@@ -234,7 +234,7 @@ app.post('/email', function (req, res) {
         });
     });
 });
-// USER POST FORM ****************************
+// ************************* USER POST FORM ****************************
 app.post('/', function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var addressArray, usersAddresses, cashAddr, errorAddress, x_2;
@@ -257,10 +257,10 @@ app.post('/', function (req, res) {
                 if (usersAddresses.indexOf(cashAddr) == -1) {
                     usersAddresses.push(cashAddr);
                 }
-                if (x_2 == 0) {
-                    //     console.log('addressArray doesnt exist, lets add the submitted address')
-                    usersAddresses.push(cashAddr);
-                }
+                //   if(x == 0){
+                // //     console.log('addressArray doesnt exist, lets add the submitted address')
+                //       usersAddresses.push(cashAddr);
+                //     }
                 //  console.log('usersAddresses', usersAddresses);
             }
             if (usersAddresses.length > 0) {
