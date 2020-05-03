@@ -68,7 +68,7 @@ app.use(cookieParser());
 
 
 
-  // initial GET REQ from USER. *************
+  // ************ initial GET REQ from USER. *************
 app.get('/', function(req, res){
 
 // var cashAddr = 'qqs74sypnfjzkxeq0ltqnt76v5za02amfgg7frk99g';
@@ -84,26 +84,128 @@ let addressArray = req.cookies['trackbitcoin.cash'];
  if(!addressArray){
   addressArray = new Array ();
   res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
- }
- 
-
-
-
- // let addressArray = req.cookies['trackbitcoin.cash']
-
-// if session addressArray doesn't exist, create a new one to store addresses
-  // if(!addressArray){
-  //   addressArray = new Array ();
-   
-  // }
-
-
-
-
-// return index page
   res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null });
+ }else{
+ 
+  // let addressArray = req.cookies['trackbitcoin.cash'];
+  let usersAddresses = new Array();
 
+ // let cashAddr = req.body.address.trim();
+  let errorAddress = null;
+
+// console.log('addressArray', addressArray);
+
+    let x = 0;
+  
+    addressArray.forEach(function(value){
+      x++;
+  //  console.log(value.cashAddr);
+
+    if(usersAddresses.indexOf(value.cashAddr) == -1){
+      usersAddresses.push(value.cashAddr);
+    }
+
+    });
+
+    // if(usersAddresses.indexOf(cashAddr) == -1){
+    //   usersAddresses.push(cashAddr);
+    // }
+
+   //  if(x == 0){
+   //     console.log('addressArray doesnt exist, lets add the submitted address')
+
+   // //     usersAddresses.push(cashAddr);
+
+   //    }
+
+  // console.log('usersAddresses', usersAddresses);
+  
+
+
+if(usersAddresses.length > 0){
+ (async () => {
+    try{
+                    // use BITBOX to get details of BCH address submitted by user
+                    let details = await bitbox.Address.details(usersAddresses);
+                    // use BITBOX to GET BCH PRICE IN USD
+
+                    let addressArray = [];
+                    let usd = await bitbox.Price.current('usd');
+                    usd = usd / 100;
+
+                details.forEach(function(address){
+
+                 // console.log(address);
+                    //console.log(details);
+
+                    var cashAddress;
+
+                    let slpaddress = address.slpAddress.trim();
+
+                    let bch = address.balance;
+        
+                   // console.log('BCH BAL (cashAddr)', bch);
+
+                    let balanceUsd = address.balance * usd;
+                  //  console.log('USD BAL', balanceUsd);
+
+                    let totalRec = address.totalReceived;
+
+                    let totalRecUsd = (address.totalReceived * usd).toFixed(2);
+
+                    let unconfirmedBal = address.unconfirmedBalance;
+                    let unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd).toFixed(2));
+
+                    //console.log(unconfirmedBal);
+                    balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
+
+                    // console.log(usersAddresses.indexOf(address.cashAddress));
+                    // console.log(usersAddresses.indexOf(address.legacyAddress));
+                    // console.log(usersAddresses.indexOf(address.slpAddress));
+
+                    if(usersAddresses.indexOf(address.cashAddress) !== -1){
+                      cashAddress = address.cashAddress;
+                    //  console.log('cashaddress was present, using '+ cashAddress);
+                    }
+
+                    if(usersAddresses.indexOf(address.legacyAddress) !== -1){
+                      cashAddress = address.legacyAddress;
+                    //  console.log('legacy address was present, using '+ cashAddress);
+                    }
+
+                    if(usersAddresses.indexOf(address.slpAddress) !== -1){
+                      cashAddress = address.slpAddress;
+                    //  console.log('slpaddress was present, using '+ cashAddress);
+                    }
+
+                //    console.log('cashAddress', cashAddress);
+
+                    addressArray.push({
+                      'cashAddr': cashAddress,
+                      'bch': bch,
+                      'usd': balanceUsd,
+                      'totalRec': totalRec,
+                      'totalRecUsd': totalRecUsd,
+                      'unconfBal': unconfirmedBal,
+                      'unconfBalUsd': unconfirmedBalusd
+                    })
+
+                  })
+               //     console.log(addressArray);
+
+                    res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
+                    res.render('index', { addressArray: addressArray, errorAddress: errorAddress, errorEmail: null});
+        }catch(error){
+          console.log(error);
+          res.render('index', { addressArray: addressArray, errorAddress: error, errorEmail: null});
+        }
+
+      })()
+    }
+  
+}
 })
+
 
 
 
@@ -144,68 +246,101 @@ app.post('/email', async function (req, res) {
 // USER POST FORM ****************************
 app.post('/', async function (req, res) {
 
-  // console.log(req.POST);
- // let session = req.session;
   let addressArray = req.cookies['trackbitcoin.cash'];
+  let usersAddresses = new Array();
 
-  let cashAddr = req.body.address;
+  let cashAddr = req.body.address.trim();
+  let errorAddress = null;
 
-  //console.log('addressArray.indexOf(cashAddr)', addressArray.indexOf(cashAddr));
+// console.log('addressArray', addressArray);
 
-
-// try {
   if(addressArray){
-
+    let x = 0;
+  
     addressArray.forEach(function(value){
-    //console.log(value.cashAddr);
-      if(value.cashAddr == cashAddr){
-        console.log('address exists, sending back error');
-        res.render('index', { addressArray: addressArray, errorAddress: 'Address '+value.cashAddr+' already exists. Enter a new address.' , errorEmail: null});
-        return;
-      }
+      x++;
+  //  console.log(value.cashAddr);
+
+    if(usersAddresses.indexOf(value.cashAddr) == -1){
+      usersAddresses.push(value.cashAddr);
+    }
+
     });
 
+    if(usersAddresses.indexOf(cashAddr) == -1){
+      usersAddresses.push(cashAddr);
+    }
+
+    if(x == 0){
+  //     console.log('addressArray doesnt exist, lets add the submitted address')
+        usersAddresses.push(cashAddr);
+
+      }
+
+ //  console.log('usersAddresses', usersAddresses);
   }
-//   }catch(error){
-//     console.error(error);
-//   }
 
 
-
-  (async () => {
+if(usersAddresses.length > 0){
+ (async () => {
     try{
-
-
                     // use BITBOX to get details of BCH address submitted by user
-                    let details = await bitbox.Address.details(cashAddr);
+                    let details = await bitbox.Address.details(usersAddresses);
                     // use BITBOX to GET BCH PRICE IN USD
+
+                    let addressArray = [];
                     let usd = await bitbox.Price.current('usd');
                     usd = usd / 100;
 
+                details.forEach(function(address){
+
+                 // console.log(address);
                     //console.log(details);
 
-                    let slpaddress = details.slpAddress.trim();
+                    var cashAddress;
 
-                    let bch = details.balance;
+                    let slpaddress = address.slpAddress.trim();
+
+                    let bch = address.balance;
         
                    // console.log('BCH BAL (cashAddr)', bch);
 
-                    let balanceUsd = details.balance * usd;
+                    let balanceUsd = address.balance * usd;
                   //  console.log('USD BAL', balanceUsd);
 
-                    let totalRec = details.totalReceived;
+                    let totalRec = address.totalReceived;
 
-                    let totalRecUsd = (details.totalReceived * usd).toFixed(2);
+                    let totalRecUsd = (address.totalReceived * usd).toFixed(2);
 
-                    let unconfirmedBal = details.unconfirmedBalance;
-                    let unconfirmedBalusd = (details.unconfirmedBalance * usd).toFixed(2);
+                    let unconfirmedBal = address.unconfirmedBalance;
+                    let unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd).toFixed(2));
 
-                    console.log(unconfirmedBal);
-                    
+                    //console.log(unconfirmedBal);
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
 
+                    // console.log(usersAddresses.indexOf(address.cashAddress));
+                    // console.log(usersAddresses.indexOf(address.legacyAddress));
+                    // console.log(usersAddresses.indexOf(address.slpAddress));
+
+                    if(usersAddresses.indexOf(address.cashAddress) !== -1){
+                      cashAddress = address.cashAddress;
+                    //  console.log('cashaddress was present, using '+ cashAddress);
+                    }
+
+                    if(usersAddresses.indexOf(address.legacyAddress) !== -1){
+                      cashAddress = address.legacyAddress;
+                    //  console.log('legacy address was present, using '+ cashAddress);
+                    }
+
+                    if(usersAddresses.indexOf(address.slpAddress) !== -1){
+                      cashAddress = address.slpAddress;
+                    //  console.log('slpaddress was present, using '+ cashAddress);
+                    }
+
+                //    console.log('cashAddress', cashAddress);
+
                     addressArray.push({
-                      'cashAddr':cashAddr,
+                      'cashAddr': cashAddress,
                       'bch': bch,
                       'usd': balanceUsd,
                       'totalRec': totalRec,
@@ -214,17 +349,26 @@ app.post('/', async function (req, res) {
                       'unconfBalUsd': unconfirmedBalusd
                     })
 
-                   // console.log(addressArray);
+                  })
+//                    console.log(addressArray);
 
                     res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
-                    res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null});
+                    res.render('index', { addressArray: addressArray, errorAddress: errorAddress, errorEmail: null});
         }catch(error){
           console.log(error);
           res.render('index', { addressArray: addressArray, errorAddress: error, errorEmail: null});
         }
 
       })()
+    }
 
+//   }catch(error){
+//     console.error(error);
+//   }
+
+
+
+ 
 })
 
 app.get('/cookie', function (req, res) {
