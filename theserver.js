@@ -12,10 +12,11 @@ const app = express();
 
 
 const request = require('request');
+const bitbox_url = 'https://rest.imaginary.cash/v2'
 
 //BITBOX in this bitch
  let BITBOX = require('bitbox-sdk').BITBOX;
- let bitbox = new BITBOX();
+ let bitbox = new BITBOX({ bitbox_url });
 // let SLPSDK = require('slp-sdk');
 // let SLP = new SLPSDK();
 //let socket = new bitbox.Socket({callback: () => {console.log('Bitbox Socket connected')}, wsURL: 'wss://ws.bitcoin.com'});
@@ -374,6 +375,18 @@ if(usersAddresses.length > 0){
 
 app.get('/cookie', function (req, res) {
 // console.log('COOKIES: ', req.cookies);
+
+//  (async () => {
+//     try{
+//                     // use BITBOX to get details of BCH address submitted by user
+//                     let details = await bitbox.Address.details('bitcoincash:qrw5zc6vmffjal4gh0pclpwve438j6kfqcgyp7cl4p');
+//                     // use BITBOX to GET BCH PRICE IN USD
+//                     console.log(details);
+// }catch(error){
+//   console.error(error)
+// }
+//                 })()
+    
  res.send(req.cookies);
 })
 
@@ -386,7 +399,11 @@ app.get('/cookie', function (req, res) {
 //REMOVE! 
 app.get('/clearcookies', function (req, res) {
  res.clearCookie('trackbitcoin.cash');
- res.send('All trackbitcoin.cash cookies have been removed. Thanks for stopping by!');
+
+ let addressArray = new Array ();
+  res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
+
+// res.send(' Thanks for stopping by!');
 })
 
 
