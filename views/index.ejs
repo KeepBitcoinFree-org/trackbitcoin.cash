@@ -106,19 +106,26 @@
 							</style>
 							<a name="tracked"><br /></a><br />
 
-							 
-							 	<button style="float:right;" class="btn" onClick="window.location.reload();">Refresh</button>
-							
+							  <% if(addressArray != null) { %>
+					
+								<button style="float:right;" class="btn" onClick="window.location.reload();">Refresh</button>
+								<a href="/clearcookies"><button style="float:left;" class="btn" >Clear</button></a>
 							 <br />
+							 
+
+
 							<h2 style="color:black;">- Tracked BCH Addresses - </h2>
-							
+							<center>
 						<div class="address-table">
 							<table class="addresses">
 							  <tr>
 							    <th><b>Address</b></th>
 							    <th><b>Balance</b></th>
 							  </tr>
-								  <% if(addressArray != null) { %>
+
+							  
+
+								
             					<% addressArray.forEach(function(addr){ %>
 							  <tr>
 							  	<td><span title="<%= addr.bch %> BCH, usd: $<%= addr.usd %>, total recieved: $<%= addr.totalRec %>, unconfBal: <%= addr.unconfBal %> BCH, unconfBalUsd: $<%= addr.unconfBalUsd %> "> <%= addr.cashAddr %> </span></td>
@@ -142,7 +149,9 @@
 							  <% }) } %>
 
 							</table>
-						</div>
+
+						
+						</div></center>
 							<p id="trackedAddresses">
 
 

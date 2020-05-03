@@ -400,10 +400,13 @@ app.get('/cookie', function (req, res) {
 app.get('/clearcookies', function (req, res) {
  res.clearCookie('trackbitcoin.cash');
 
- let addressArray = new Array ();
-  res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
+// let addressArray = new Array ();
+//  res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
 
-// res.send(' Thanks for stopping by!');
+  res.redirect('/');
+ // res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
+
+//res.send('All trackbitcoin.cash cookies have been removed. Go back to http://TrackBitcoin.Cash to start over, do not use the back button.');
 })
 
 

@@ -360,9 +360,11 @@ app.get('/cookie', function (req, res) {
 //REMOVE! 
 app.get('/clearcookies', function (req, res) {
     res.clearCookie('trackbitcoin.cash');
-    var addressArray = new Array();
-    res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
-    // res.send(' Thanks for stopping by!');
+    // let addressArray = new Array ();
+    //  res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
+    res.redirect('/');
+    // res.render('index', { addressArray: addressArray, errorAddress: 'All trackbitcoin.cash cookies have been removed.', errorEmail: null });
+    //res.send('All trackbitcoin.cash cookies have been removed. Go back to http://TrackBitcoin.Cash to start over, do not use the back button.');
 });
 app.listen(process.env.PORT || 80, function () {
     console.log('TrackBitcoin.Cash server listening on port 80!');
