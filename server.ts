@@ -12,7 +12,7 @@ const app = express();
 
 
 const request = require('request');
-const bitbox_url = 'https://rest.imaginary.cash/v2'
+const bitbox_url = 'https://api.fullstack.cash/v3'
 
 //BITBOX in this bitch
  let BITBOX = require('bitbox-sdk').BITBOX;
