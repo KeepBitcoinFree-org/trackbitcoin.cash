@@ -137,7 +137,7 @@
 							  <tr>
 							  	<td><span title="<%= addr.bch %> BCH, usd: $<%= addr.usd %>, total recieved: $<%= addr.totalRec %>, unconfBal: <%= addr.unconfBal %> BCH, unconfBalUsd: $<%= addr.unconfBalUsd %> "> <%= addr.cashAddr %> </span></td>
 							  	<td><span title="Total balance"> <%= addr.bch %> BCH, $<%= addr.usd %> <br /> 
-							  		<% if (addr.unconfBalUsd > 0){ %>
+							  		<% if (addr.unconfBalUsd !== '0.00'){ %>
 							  		<!-- <%= addr.unconfBal %> -->
 							  		($<%= addr.unconfBalUsd %> unconfirmed)</span></td>
 							  		<% } %>
@@ -313,9 +313,9 @@
 			<div class="donation-wrapper" style="width:100%;overflow:hidden;">
 					<div class="donation-bch-left" style="float:left;width:45%;padding:10px;">
 						<b>Bitcoin Cash BCH Donation Address</b>
-						<img class="alignnone size-medium wp-image-269" src="https://keepbitcoinfree.org/wp-content/uploads/2019/10/KBF-BCH-DONATION-QR-290x300.png" alt="" width="200" height="200" /><br />
-						<a href="bitcoincash:qpphskv6mgh62teqjhumsnr6xxqqux9t7cfw9n4rmr"><button type="button"> Open in Wallet </button></a></center>
-						bitcoincash:qpphskv6mgh62teqjhumsnr6xxqqux9t7cfw9n4rmr
+						<img class="alignnone size-medium wp-image-269" src="https://keepbitcoinfree.org/wp-content/uploads/bch-kbf-donation-address.png" alt="" width="200" height="200" /><br />
+						<a href="bitcoincash:qrk7e69cj7m76rymhgm9x93kd9y2d5wn8uhdtfcgh6"><button type="button"> Open in Wallet </button></a></center>
+						bitcoincash:qrk7e69cj7m76rymhgm9x93kd9y2d5wn8uhdtfcgh6
 					</div>
 				
 					<div class="donation-slp-right" style="width:45%;float:right;padding:10px">

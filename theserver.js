@@ -10,7 +10,6 @@ const app = express();
 //var session = require('express-session')
 //app.use(session({secret:'trackBitcoinCash__BCH420'}));
 
-
 const request = require('request');
 const bitbox_url = 'https://api.fullstack.cash/v3'
 
@@ -19,6 +18,8 @@ const bitbox_url = 'https://api.fullstack.cash/v3'
  let bitbox = new BITBOX({ bitbox_url });
 // let SLPSDK = require('slp-sdk');
 // let SLP = new SLPSDK();
+
+// future socket code to make it update live.
 //let socket = new bitbox.Socket({callback: () => {console.log('Bitbox Socket connected')}, wsURL: 'wss://ws.bitcoin.com'});
 
 // SLPDB queries
@@ -77,18 +78,20 @@ app.get('/', function(req, res){
 // initialize the session from the request. 
  // let session = req.session;
 
- // console.log(req.cookies);
- // console.log(req.cookies['trackbitcoin.cash']);
+ //console.log(req.cookies);
+ //console.log(req.cookies['trackbitcoin.cash']);
 
 let addressArray = req.cookies['trackbitcoin.cash'];
 
  if(!addressArray){
+  console.log('address array doesnt exist in cookies')
   addressArray = new Array ();
   res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
   res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null });
  }else{
  
   // let addressArray = req.cookies['trackbitcoin.cash'];
+  console.log('addressArray exists in cookies, processing');
   let usersAddresses = new Array();
 
  // let cashAddr = req.body.address.trim();
