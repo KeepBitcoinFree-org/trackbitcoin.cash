@@ -19,6 +19,7 @@
   "homepage": "https://github.com/KeepBitcoinFree-org/trackbitcoin.cash#readme",
   "dependencies": {
     "@chris.troutner/bch-js": "^3.3.4",
+    "bitcoincashjs-lib": "^3.3.3",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.4",
     "dotenv": "^6.2.0",
