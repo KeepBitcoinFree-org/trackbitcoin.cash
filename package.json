@@ -1,5 +1,5 @@
 {
-  "name": "trackbitcoin.cash webapp",
+  "name": "simple-slp-faucet",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KeepBitcoinFree-org/trackbitcoin.cash.git"
+    "url": "git+https://github.com/simpleledger/simple-slp-faucet.git"
   },
-  "author": "SOURtoshi, KeepBitcoinFree.org",
+  "author": "James Cramer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/KeepBitcoinFree-org/issues"
+    "url": "https://github.com/simpleledger/simple-slp-faucet/issues"
   },
-  "homepage": "https://github.com/KeepBitcoinFree-org/trackbitcoin.cash#readme",
+  "homepage": "https://github.com/simpleledger/simple-slp-faucet#readme",
   "dependencies": {
-    "@chris.troutner/bch-js": "^3.3.4",
+    "bitbox-sdk": "^8.11.2",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.4",
     "dotenv": "^6.2.0",

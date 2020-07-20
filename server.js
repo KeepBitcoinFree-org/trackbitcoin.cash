@@ -49,36 +49,17 @@ var express = require('express');
 //import * as express from 'express';
 var bodyParser = __importStar(require("body-parser"));
 var app = express();
-var NETWORK = 'mainnet';
 //import BigNumber from 'bignumber.js';
 //var session = require('express-session')
 //app.use(session({secret:'trackBitcoinCash__BCH420'}));
 var request = require('request');
-//parser for our cookies
-var cookieParser = require('cookie-parser');
-//var csrfProtection = csrf({ cookie: true })
-//const cookieSession = require('cookie-session');
-app.use(cookieParser());
-// configure Express
-app.set('views', __dirname + '/views');
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-// const bitbox_url = 'https://api.fullstack.cash/v3'
-//BITBOX out this bitch
-// let BITBOX = require('bitbox-sdk').BITBOX;
-// let bitbox = new BITBOX({ bitbox_url });
-// FULLSTACK.CASH in this bitch now
-var MAINNET_API = 'https://api.fullstack.cash/v3/';
-var TESTNET_API = 'https://tapi.fullstack.cash/v3/';
-var BCHJS = require('@chris.troutner/bch-js');
-// let bchjs = new BCHJS();
-// if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API });
-// else bchjs = new BCHJS({ restURL: TESTNET_API }); 
-var bchjs = new BCHJS({
-    restURL: 'https://api.fullstack.cash/v3/',
-    apiToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYjBhZWJjYjA4MjMyMDAxMjViOWZmOCIsImVtYWlsIjoiQml0Y29pbkNhc2hAa2VlcGJpdGNvaW5mcmVlLm9yZyIsImFwaUxldmVsIjowLCJyYXRlTGltaXQiOjMsImlhdCI6MTU5NTEzMDkzOSwiZXhwIjoxNTk3NzIyOTM5fQ.WEVGS19fPQrQW_NSCLZB7souCQcnEI70_Gyc1_QrpiA' // Your JWT token here.
-});
+var bitbox_url = 'https://rest.imaginary.cash/v2';
+//BITBOX in this bitch
+var BITBOX = require('bitbox-sdk').BITBOX;
+var bitbox = new BITBOX({ bitbox_url: bitbox_url });
+// let SLPSDK = require('slp-sdk');
+// let SLP = new SLPSDK();
+//let socket = new bitbox.Socket({callback: () => {console.log('Bitbox Socket connected')}, wsURL: 'wss://ws.bitcoin.com'});
 // SLPDB queries
 /*
 const queryAllUnconf2Faucet = {
@@ -105,8 +86,18 @@ const queryAllUnconf = {
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+// configure Express
+app.set('views', __dirname + '/views');
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
 //csurf cookie thangs
 //var csrf = require('csurf')
+//parser for our cookies
+var cookieParser = require('cookie-parser');
+//var csrfProtection = csrf({ cookie: true })
+//const cookieSession = require('cookie-session');
+app.use(cookieParser());
 //app.use(csrfMiddleware);
 // ************ initial GET REQ from USER. *************
 app.get('/', function (req, res) {
@@ -114,18 +105,16 @@ app.get('/', function (req, res) {
     var _this = this;
     // initialize the session from the request. 
     // let session = req.session;
-    //console.log(req.cookies);
-    //console.log(req.cookies['trackbitcoin.cash']);
+    // console.log(req.cookies);
+    // console.log(req.cookies['trackbitcoin.cash']);
     var addressArray = req.cookies['trackbitcoin.cash'];
     if (!addressArray) {
-        console.log('address array doesnt exist in cookies');
         addressArray = new Array();
         res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
         res.render('index', { addressArray: addressArray, errorAddress: null, errorEmail: null });
     }
     else {
         // let addressArray = req.cookies['trackbitcoin.cash'];
-        console.log('addressArray exists in cookies, processing address array');
         var usersAddresses_1 = new Array();
         // let cashAddr = req.body.address.trim();
         var errorAddress_1 = null;
@@ -153,45 +142,44 @@ app.get('/', function (req, res) {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, bchjs.Blockbook.balance(usersAddresses_1)];
+                            return [4 /*yield*/, bitbox.Address.details(usersAddresses_1)];
                         case 1:
                             details = _a.sent();
                             addressArray_1 = [];
-                            return [4 /*yield*/, bchjs.Price.current('usd')];
+                            return [4 /*yield*/, bitbox.Price.current('usd')];
                         case 2:
                             usd_1 = _a.sent();
                             usd_1 = usd_1 / 100;
                             details.forEach(function (address) {
                                 // console.log(address);
                                 //console.log(details);
-                                var cashAddress = address.address;
-                                //  let slpaddress = address.slpAddress.trim();
-                                var bch = address.balance / 100000000;
+                                var cashAddress;
+                                var slpaddress = address.slpAddress.trim();
+                                var bch = address.balance;
                                 // console.log('BCH BAL (cashAddr)', bch);
-                                var balanceUsd = bch * usd_1;
+                                var balanceUsd = address.balance * usd_1;
                                 //  console.log('USD BAL', balanceUsd);
-                                var totalRec = address.totalReceived / 100000000;
-                                var totalRecUsd = numberWithCommas((totalRec * usd_1).toFixed(2));
-                                var unconfirmedBal = address.unconfirmedBalance / 100000000;
-                                var unconfirmedBalusd = numberWithCommas((unconfirmedBal * usd_1).toFixed(2));
+                                var totalRec = address.totalReceived;
+                                var totalRecUsd = (address.totalReceived * usd_1).toFixed(2);
+                                var unconfirmedBal = address.unconfirmedBalance;
+                                var unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd_1).toFixed(2));
                                 //console.log(unconfirmedBal);
                                 balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
                                 // console.log(usersAddresses.indexOf(address.cashAddress));
                                 // console.log(usersAddresses.indexOf(address.legacyAddress));
                                 // console.log(usersAddresses.indexOf(address.slpAddress));
-                                // check to see what type of address this is. 
-                                // if(usersAddresses.indexOf(address.cashAddress) !== -1){
-                                //   cashAddress = address.cashAddress;
-                                // //  console.log('cashaddress was present, using '+ cashAddress);
-                                // }
-                                // if(usersAddresses.indexOf(address.legacyAddress) !== -1){
-                                //   cashAddress = address.legacyAddress;
-                                // //  console.log('legacy address was present, using '+ cashAddress);
-                                // }
-                                // if(usersAddresses.indexOf(address.slpAddress) !== -1){
-                                //   cashAddress = address.slpAddress;
-                                // //  console.log('slpaddress was present, using '+ cashAddress);
-                                // }
+                                if (usersAddresses_1.indexOf(address.cashAddress) !== -1) {
+                                    cashAddress = address.cashAddress;
+                                    //  console.log('cashaddress was present, using '+ cashAddress);
+                                }
+                                if (usersAddresses_1.indexOf(address.legacyAddress) !== -1) {
+                                    cashAddress = address.legacyAddress;
+                                    //  console.log('legacy address was present, using '+ cashAddress);
+                                }
+                                if (usersAddresses_1.indexOf(address.slpAddress) !== -1) {
+                                    cashAddress = address.slpAddress;
+                                    //  console.log('slpaddress was present, using '+ cashAddress);
+                                }
                                 //    console.log('cashAddress', cashAddress);
                                 addressArray_1.push({
                                     'cashAddr': cashAddress,
@@ -283,45 +271,44 @@ app.post('/', function (req, res) {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 3, , 4]);
-                                return [4 /*yield*/, bchjs.Blockbook.balance(usersAddresses)];
+                                return [4 /*yield*/, bitbox.Address.details(usersAddresses)];
                             case 1:
                                 details = _a.sent();
                                 addressArray_2 = [];
-                                return [4 /*yield*/, bchjs.Price.current('usd')];
+                                return [4 /*yield*/, bitbox.Price.current('usd')];
                             case 2:
                                 usd_2 = _a.sent();
                                 usd_2 = usd_2 / 100;
                                 details.forEach(function (address) {
                                     // console.log(address);
                                     //console.log(details);
-                                    var cashAddress = address.address;
-                                    //  let slpaddress = address.slpAddress.trim();
-                                    var bch = address.balance / 100000000;
+                                    var cashAddress;
+                                    var slpaddress = address.slpAddress.trim();
+                                    var bch = address.balance;
                                     // console.log('BCH BAL (cashAddr)', bch);
-                                    var balanceUsd = bch * usd_2;
+                                    var balanceUsd = address.balance * usd_2;
                                     //  console.log('USD BAL', balanceUsd);
-                                    var totalRec = address.totalReceived / 100000000;
-                                    var totalRecUsd = numberWithCommas((totalRec * usd_2).toFixed(2));
-                                    var unconfirmedBal = address.unconfirmedBalance / 100000000;
-                                    var unconfirmedBalusd = numberWithCommas((unconfirmedBal * usd_2).toFixed(2));
+                                    var totalRec = address.totalReceived;
+                                    var totalRecUsd = (address.totalReceived * usd_2).toFixed(2);
+                                    var unconfirmedBal = address.unconfirmedBalance;
+                                    var unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd_2).toFixed(2));
                                     //console.log(unconfirmedBal);
                                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
                                     // console.log(usersAddresses.indexOf(address.cashAddress));
                                     // console.log(usersAddresses.indexOf(address.legacyAddress));
                                     // console.log(usersAddresses.indexOf(address.slpAddress));
-                                    // check to see what type of address this is. 
-                                    // if(usersAddresses.indexOf(address.cashAddress) !== -1){
-                                    //   cashAddress = address.cashAddress;
-                                    // //  console.log('cashaddress was present, using '+ cashAddress);
-                                    // }
-                                    // if(usersAddresses.indexOf(address.legacyAddress) !== -1){
-                                    //   cashAddress = address.legacyAddress;
-                                    // //  console.log('legacy address was present, using '+ cashAddress);
-                                    // }
-                                    // if(usersAddresses.indexOf(address.slpAddress) !== -1){
-                                    //   cashAddress = address.slpAddress;
-                                    // //  console.log('slpaddress was present, using '+ cashAddress);
-                                    // }
+                                    if (usersAddresses.indexOf(address.cashAddress) !== -1) {
+                                        cashAddress = address.cashAddress;
+                                        //  console.log('cashaddress was present, using '+ cashAddress);
+                                    }
+                                    if (usersAddresses.indexOf(address.legacyAddress) !== -1) {
+                                        cashAddress = address.legacyAddress;
+                                        //  console.log('legacy address was present, using '+ cashAddress);
+                                    }
+                                    if (usersAddresses.indexOf(address.slpAddress) !== -1) {
+                                        cashAddress = address.slpAddress;
+                                        //  console.log('slpaddress was present, using '+ cashAddress);
+                                    }
                                     //    console.log('cashAddress', cashAddress);
                                     addressArray_2.push({
                                         'cashAddr': cashAddress,
@@ -333,7 +320,7 @@ app.post('/', function (req, res) {
                                         'unconfBalUsd': unconfirmedBalusd
                                     });
                                 });
-                                //     console.log(addressArray);
+                                //                    console.log(addressArray);
                                 res.cookie('trackbitcoin.cash', addressArray_2, { expire: 2147483647, httpOnly: true });
                                 res.render('index', { addressArray: addressArray_2, errorAddress: errorAddress, errorEmail: null });
                                 return [3 /*break*/, 4];

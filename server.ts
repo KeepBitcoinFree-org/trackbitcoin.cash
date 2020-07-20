@@ -5,45 +5,22 @@ const express = require('express');
 import * as bodyParser from 'body-parser';
 const app = express();
 
-const NETWORK = 'mainnet';
 //import BigNumber from 'bignumber.js';
 
 //var session = require('express-session')
 //app.use(session({secret:'trackBitcoinCash__BCH420'}));
 
 const request = require('request');
-//parser for our cookies
-const cookieParser = require('cookie-parser');
-//var csrfProtection = csrf({ cookie: true })
-//const cookieSession = require('cookie-session');
+const bitbox_url = 'https://api.fullstack.cash/v3'
 
-app.use(cookieParser());
-// configure Express
-app.set('views', __dirname + '/views');
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-// const bitbox_url = 'https://api.fullstack.cash/v3'
+//BITBOX in this bitch
+ let BITBOX = require('bitbox-sdk').BITBOX;
+ let bitbox = new BITBOX({ bitbox_url });
+// let SLPSDK = require('slp-sdk');
+// let SLP = new SLPSDK();
 
-//BITBOX out this bitch
-// let BITBOX = require('bitbox-sdk').BITBOX;
-// let bitbox = new BITBOX({ bitbox_url });
-
-// FULLSTACK.CASH in this bitch now
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'https://tapi.fullstack.cash/v3/'
-
-const BCHJS = require('@chris.troutner/bch-js');
-
-// let bchjs = new BCHJS();
-// if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API });
-// else bchjs = new BCHJS({ restURL: TESTNET_API }); 
-
-let bchjs = new BCHJS({
-  restURL: 'https://api.fullstack.cash/v3/',
-  apiToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYjBhZWJjYjA4MjMyMDAxMjViOWZmOCIsImVtYWlsIjoiQml0Y29pbkNhc2hAa2VlcGJpdGNvaW5mcmVlLm9yZyIsImFwaUxldmVsIjowLCJyYXRlTGltaXQiOjMsImlhdCI6MTU5NTEzMDkzOSwiZXhwIjoxNTk3NzIyOTM5fQ.WEVGS19fPQrQW_NSCLZB7souCQcnEI70_Gyc1_QrpiA' // Your JWT token here.
-})
-
+// future socket code to make it update live.
+//let socket = new bitbox.Socket({callback: () => {console.log('Bitbox Socket connected')}, wsURL: 'wss://ws.bitcoin.com'});
 
 // SLPDB queries
 /*
@@ -73,15 +50,23 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-
+// configure Express
+app.set('views', __dirname + '/views');
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
 
 
 //csurf cookie thangs
 //var csrf = require('csurf')
 
+//parser for our cookies
+const cookieParser = require('cookie-parser');
+//var csrfProtection = csrf({ cookie: true })
+//const cookieSession = require('cookie-session');
 
+app.use(cookieParser());
 //app.use(csrfMiddleware);
-
 
 
 
@@ -106,7 +91,7 @@ let addressArray = req.cookies['trackbitcoin.cash'];
  }else{
  
   // let addressArray = req.cookies['trackbitcoin.cash'];
-  console.log('addressArray exists in cookies, processing address array');
+  console.log('addressArray exists in cookies, processing');
   let usersAddresses = new Array();
 
  // let cashAddr = req.body.address.trim();
@@ -144,12 +129,12 @@ let addressArray = req.cookies['trackbitcoin.cash'];
 if(usersAddresses.length > 0){
  (async () => {
     try{
-                   // use BITBOX to get details of BCH address submitted by user
-                    let details = await bchjs.Blockbook.balance(usersAddresses);
+                    // use BITBOX to get details of BCH address submitted by user
+                    let details = await bitbox.Address.details(usersAddresses);
                     // use BITBOX to GET BCH PRICE IN USD
 
                     let addressArray = [];
-                    let usd = await bchjs.Price.current('usd');
+                    let usd = await bitbox.Price.current('usd');
                     usd = usd / 100;
 
                 details.forEach(function(address){
@@ -157,23 +142,23 @@ if(usersAddresses.length > 0){
                  // console.log(address);
                     //console.log(details);
 
-                    var cashAddress = address.address;
+                    var cashAddress;
 
-                  //  let slpaddress = address.slpAddress.trim();
+                    let slpaddress = address.slpAddress.trim();
 
-                    let bch = address.balance / 100000000;
+                    let bch = address.balance;
         
                    // console.log('BCH BAL (cashAddr)', bch);
 
-                    let balanceUsd = bch * usd;
+                    let balanceUsd = address.balance * usd;
                   //  console.log('USD BAL', balanceUsd);
 
-                    let totalRec = address.totalReceived / 100000000;
+                    let totalRec = address.totalReceived;
 
-                    let totalRecUsd = numberWithCommas((totalRec * usd).toFixed(2));
+                    let totalRecUsd = (address.totalReceived * usd).toFixed(2);
 
-                    let unconfirmedBal = address.unconfirmedBalance / 100000000;
-                    let unconfirmedBalusd = numberWithCommas((unconfirmedBal * usd).toFixed(2));
+                    let unconfirmedBal = address.unconfirmedBalance;
+                    let unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd).toFixed(2));
 
                     //console.log(unconfirmedBal);
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
@@ -182,21 +167,20 @@ if(usersAddresses.length > 0){
                     // console.log(usersAddresses.indexOf(address.legacyAddress));
                     // console.log(usersAddresses.indexOf(address.slpAddress));
 
-                    // check to see what type of address this is. 
-                    // if(usersAddresses.indexOf(address.cashAddress) !== -1){
-                    //   cashAddress = address.cashAddress;
-                    // //  console.log('cashaddress was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.cashAddress) !== -1){
+                      cashAddress = address.cashAddress;
+                    //  console.log('cashaddress was present, using '+ cashAddress);
+                    }
 
-                    // if(usersAddresses.indexOf(address.legacyAddress) !== -1){
-                    //   cashAddress = address.legacyAddress;
-                    // //  console.log('legacy address was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.legacyAddress) !== -1){
+                      cashAddress = address.legacyAddress;
+                    //  console.log('legacy address was present, using '+ cashAddress);
+                    }
 
-                    // if(usersAddresses.indexOf(address.slpAddress) !== -1){
-                    //   cashAddress = address.slpAddress;
-                    // //  console.log('slpaddress was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.slpAddress) !== -1){
+                      cashAddress = address.slpAddress;
+                    //  console.log('slpaddress was present, using '+ cashAddress);
+                    }
 
                 //    console.log('cashAddress', cashAddress);
 
@@ -305,12 +289,12 @@ app.post('/', async function (req, res) {
 if(usersAddresses.length > 0){
  (async () => {
     try{
-                  // use BITBOX to get details of BCH address submitted by user
-                    let details = await bchjs.Blockbook.balance(usersAddresses);
+                    // use BITBOX to get details of BCH address submitted by user
+                    let details = await bitbox.Address.details(usersAddresses);
                     // use BITBOX to GET BCH PRICE IN USD
 
                     let addressArray = [];
-                    let usd = await bchjs.Price.current('usd');
+                    let usd = await bitbox.Price.current('usd');
                     usd = usd / 100;
 
                 details.forEach(function(address){
@@ -318,23 +302,23 @@ if(usersAddresses.length > 0){
                  // console.log(address);
                     //console.log(details);
 
-                    var cashAddress = address.address;
+                    var cashAddress;
 
-                  //  let slpaddress = address.slpAddress.trim();
+                    let slpaddress = address.slpAddress.trim();
 
-                    let bch = address.balance / 100000000;
+                    let bch = address.balance;
         
                    // console.log('BCH BAL (cashAddr)', bch);
 
-                    let balanceUsd = bch * usd;
+                    let balanceUsd = address.balance * usd;
                   //  console.log('USD BAL', balanceUsd);
 
-                    let totalRec = address.totalReceived / 100000000;
+                    let totalRec = address.totalReceived;
 
-                    let totalRecUsd = numberWithCommas((totalRec * usd).toFixed(2));
+                    let totalRecUsd = (address.totalReceived * usd).toFixed(2);
 
-                    let unconfirmedBal = address.unconfirmedBalance / 100000000;
-                    let unconfirmedBalusd = numberWithCommas((unconfirmedBal * usd).toFixed(2));
+                    let unconfirmedBal = address.unconfirmedBalance;
+                    let unconfirmedBalusd = numberWithCommas((address.unconfirmedBalance * usd).toFixed(2));
 
                     //console.log(unconfirmedBal);
                     balanceUsd = numberWithCommas(balanceUsd.toFixed(2));
@@ -343,21 +327,20 @@ if(usersAddresses.length > 0){
                     // console.log(usersAddresses.indexOf(address.legacyAddress));
                     // console.log(usersAddresses.indexOf(address.slpAddress));
 
-                    // check to see what type of address this is. 
-                    // if(usersAddresses.indexOf(address.cashAddress) !== -1){
-                    //   cashAddress = address.cashAddress;
-                    // //  console.log('cashaddress was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.cashAddress) !== -1){
+                      cashAddress = address.cashAddress;
+                    //  console.log('cashaddress was present, using '+ cashAddress);
+                    }
 
-                    // if(usersAddresses.indexOf(address.legacyAddress) !== -1){
-                    //   cashAddress = address.legacyAddress;
-                    // //  console.log('legacy address was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.legacyAddress) !== -1){
+                      cashAddress = address.legacyAddress;
+                    //  console.log('legacy address was present, using '+ cashAddress);
+                    }
 
-                    // if(usersAddresses.indexOf(address.slpAddress) !== -1){
-                    //   cashAddress = address.slpAddress;
-                    // //  console.log('slpaddress was present, using '+ cashAddress);
-                    // }
+                    if(usersAddresses.indexOf(address.slpAddress) !== -1){
+                      cashAddress = address.slpAddress;
+                    //  console.log('slpaddress was present, using '+ cashAddress);
+                    }
 
                 //    console.log('cashAddress', cashAddress);
 
@@ -372,8 +355,7 @@ if(usersAddresses.length > 0){
                     })
 
                   })
-          
-               //     console.log(addressArray);
+//                    console.log(addressArray);
 
                     res.cookie('trackbitcoin.cash', addressArray, { expire: 2147483647, httpOnly: true });
                     res.render('index', { addressArray: addressArray, errorAddress: errorAddress, errorEmail: null});
