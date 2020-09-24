@@ -17,7 +17,6 @@
 		<meta property="og:url" content="http://trackbitcoin.cash">
 		<link rel="shortcut icon" href="https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_64,w_64,q_auto/892386/12-bitcoin-cash-square-crop-full_dop5ob.png">
 
-
 	</head>
 	<body class="landing is-preload">
 		<div id="page-wrapper">
@@ -131,12 +130,36 @@
 							    <th><b>Balance</b></th>
 							  </tr>
 
-							  
+							  <script>
+								      function showDetails(){
+								     //   document.getElementById('sourtoshiBal').style.display = "block";
 
+								      //  if(document.getElementById('sourtoshiBal').style.display = "none"){
+								        //  document.getElementById('sourtoshiBal').style.display = "block";
+								        // }else{
+								        //  document.getElementById('sourtoshiBal').style.display = "none";
+								        // }
+
+								        var x = document.getElementById('details');
+								        if (x.style.display === "none") {
+								          x.style.display = "block";
+								        } else {
+								          x.style.display = "none";
+								        }
+								      }
+							  </script>
+							   <!-- &nbsp; &nbsp; &nbsp; => -->
 								
             					<% addressArray.forEach(function(addr){ %>
 							  <tr>
-							  	<td><span title="Balance: <%= addr.bch %> BCH, usd: $<%= addr.usd %>, total recieved: <%= addr.totalRec %> BCH, unconfBal: <%= addr.unconfBal %> BCH, unconfBalUsd: $<%= addr.unconfBalUsd %> "> <%= addr.cashAddr %> </span></td>
+							  	<td><span style="" onClick="showDetails()"><%= addr.cashAddr %> </span>
+							  		<span id="details" style="display:none;font-size:11pt"><!-- Name: xxx <br/> --> Balance: <%= addr.bch %> BCH ($<%= addr.usd %>)<br />Total recieved: <%= addr.totalRec %> BCH <br />
+							  			<% if (addr.unconfBalUsd !== '0.00'){ %>
+							  			UnconfBal: <%= addr.unconfBal %> BCH <br />UnconfBalUsd: $<%= addr.unconfBalUsd %> 
+							  			<% } %>
+							  		</span>
+							  	</td>
+
 							  	<td><span title="Total balance"> <%= addr.bch %> BCH, $<%= addr.usd %> <br /> 
 							  		<% if (addr.unconfBalUsd !== '0.00'){ %>
 							  		<!-- <%= addr.unconfBal %> -->
