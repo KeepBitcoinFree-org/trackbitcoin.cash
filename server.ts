@@ -213,14 +213,6 @@ if(usersAddresses.length > 0){
 
 
 
-
-// TEST PAGE FOR FUTURE DEV
-app.get('/testpay', function (req, res) {
-  //startWebSocket();
-  res.render('testpay', {});
-})
-
-
 // write to file
 var fs = require('fs')
 
@@ -229,9 +221,9 @@ var fs = require('fs')
 app.post('/email', async function (req, res) {
 
   let addressArray = req.cookies['trackbitcoin.cash'];
-  let email = req.body.email;
+  let email = req.body.email + '\n'
 
-
+  console.log('** Email submitted: '+ email);
 
   fs.appendFile('emails.txt', email, function (err) {
   
@@ -291,8 +283,8 @@ if(usersAddresses.length > 0){
     try{
                     // use BITBOX to get details of BCH address submitted by user
                     let details = await bitbox.Address.details(usersAddresses);
-                    // use BITBOX to GET BCH PRICE IN USD
 
+                    // use BITBOX to GET BCH PRICE IN USD
                     let addressArray = [];
                     let usd = await bitbox.Price.current('usd');
                     usd = usd / 100;
@@ -340,6 +332,11 @@ if(usersAddresses.length > 0){
                     if(usersAddresses.indexOf(address.slpAddress) !== -1){
                       cashAddress = address.slpAddress;
                     //  console.log('slpaddress was present, using '+ cashAddress);
+                    }
+
+                    if ((!cashAddress) || (cashAddress === "" )){
+                     // cashAddress = 'missing';
+                      cashAddress = address.cashAddress;
                     }
 
                 //    console.log('cashAddress', cashAddress);
