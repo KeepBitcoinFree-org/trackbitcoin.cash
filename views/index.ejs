@@ -131,7 +131,7 @@
 							  </tr>
 
 							  <script>
-								      function showDetails(){
+								      function showDetails(counter){
 								     //   document.getElementById('sourtoshiBal').style.display = "block";
 
 								      //  if(document.getElementById('sourtoshiBal').style.display = "none"){
@@ -140,20 +140,28 @@
 								        //  document.getElementById('sourtoshiBal').style.display = "none";
 								        // }
 
-								        var x = document.getElementById('details');
+								        let divName = 'details'+counter;
+
+								        console.log(divName);
+
+								        var x = document.getElementById(divName);
 								        if (x.style.display === "none") {
 								          x.style.display = "block";
 								        } else {
 								          x.style.display = "none";
 								        }
 								      }
+
+								      
 							  </script>
 							   <!-- &nbsp; &nbsp; &nbsp; => -->
-								
+								<% let counter = 0; %>
+
             					<% addressArray.forEach(function(addr){ %>
+
 							  <tr>
-							  	<td><span style="" onClick="showDetails()"><%= addr.cashAddr %> </span>
-							  		<span id="details" style="display:none;font-size:11pt"><!-- Name: xxx <br/> --> Balance: <%= addr.bch %> BCH ($<%= addr.usd %>)<br />Total recieved: <%= addr.totalRec %> BCH <br />
+							  	<td><span style="" onClick="showDetails(<%= counter %>)"><%= addr.cashAddr %> </span>
+							  		<span id="details<%= counter %>" style="display:none;font-size:11pt"><!-- Name: xxx <br/> --> Balance: <%= addr.bch %> BCH ($<%= addr.usd %>)<br />Total recieved: <%= addr.totalRec %> BCH <br />
 							  			<% if (addr.unconfBalUsd !== '0.00'){ %>
 							  			UnconfBal: <%= addr.unconfBal %> BCH <br />UnconfBalUsd: $<%= addr.unconfBalUsd %> 
 							  			<% } %>
@@ -176,7 +184,7 @@
 							    unconfBal: <%= addr.unconfBal %> BCH, <br />
 							    unconfBalUsd: <%= addr.unconfBalUsd %> <br />
 							  </div>
-					-->
+					-->			<% counter++; %>
 							  <% }) } %>
 
 							</table>
